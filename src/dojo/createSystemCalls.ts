@@ -34,7 +34,7 @@ export function createSystemCalls(
 
     const reflash = async (account: AccountInterface) => {
         try {
-            const {transaction_hash} = await client.actions.reflash({
+            const { transaction_hash } = await client.actions.reflash({
                 account
             })
             console.log(
@@ -51,8 +51,93 @@ export function createSystemCalls(
 
     const add_land = async (account: AccountInterface) => {
         try {
-            const {transaction_hash} = await client.actions.add_land({
+            const { transaction_hash } = await client.actions.add_land({
                 account
+            })
+            console.log(
+                await account.waitForTransaction(transaction_hash, {
+                    retryInterval: 100,
+                })
+            );
+
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const plant = async (account: AccountInterface, land_id: number) => {
+        try {
+            const { transaction_hash } = await client.actions.plant({
+                account, land_id
+            })
+            console.log(
+                await account.waitForTransaction(transaction_hash, {
+                    retryInterval: 100,
+                })
+            );
+
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const watering_myself = async (account: AccountInterface, tree_id: number) => {
+        try {
+            const { transaction_hash } = await client.actions.watering_myself({
+                account, tree_id
+            })
+            console.log(
+                await account.waitForTransaction(transaction_hash, {
+                    retryInterval: 100,
+                })
+            );
+
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const watering_others = async (account: AccountInterface, tree_id: number) => {
+        try {
+            const { transaction_hash } = await client.actions.watering_others({
+                account, tree_id
+            })
+            console.log(
+                await account.waitForTransaction(transaction_hash, {
+                    retryInterval: 100,
+                })
+            );
+
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const harvest = async (account: AccountInterface, land_id: number) => {
+        try {
+            const { transaction_hash } = await client.actions.harvest({
+                account, land_id
+            })
+            console.log(
+                await account.waitForTransaction(transaction_hash, {
+                    retryInterval: 100,
+                })
+            );
+
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const convert_fruit_to_seed = async (account: AccountInterface, fruit_amount: number) => {
+        try {
+            const { transaction_hash } = await client.actions.convert_fruit_to_seed({
+                account, fruit_amount
             })
             console.log(
                 await account.waitForTransaction(transaction_hash, {
@@ -125,7 +210,11 @@ export function createSystemCalls(
     return {
         spawn,
         reflash,
-        add_land
-        // move,
+        add_land,
+        plant,
+        watering_myself,
+        watering_others,
+        harvest,
+        convert_fruit_to_seed
     };
 }

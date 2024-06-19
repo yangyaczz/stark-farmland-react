@@ -1,15 +1,23 @@
 import { useComponentValue } from "@dojoengine/react";
 import { Entity, getComponentValue } from "@dojoengine/recs";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./App.css";
-// import { Direction } from "./utils";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
 import { useDojo } from "./dojo/useDojo";
+import FarmLand from './FarmLand';
 
 function App() {
     const {
         setup: {
-            systemCalls: { spawn , reflash ,  add_land},
+            systemCalls: {
+                spawn,
+                reflash,
+                add_land,
+                plant,
+                watering_myself,
+                watering_others,
+                harvest,
+                convert_fruit_to_seed },
             clientComponents: { Land, LandManager, Player, Tree, TreeManager },
         },
         account,
@@ -20,18 +28,21 @@ function App() {
         isError: false,
     });
 
+
     // entity id we are syncing
-    const entityId = getEntityIdFromKeys([
-        BigInt(account?.account.address),
-    ]) as Entity;
+    // const entityId = getEntityIdFromKeys([
+    //     BigInt(account?.account.address),
+    // ]) as Entity;
 
-    const land = useComponentValue(Land, entityId);
-    const landManager = useComponentValue(LandManager, entityId);
-    const player = useComponentValue(Player, entityId);
-    const tree = useComponentValue(Tree, entityId);
-    const treeManager = useComponentValue(TreeManager, entityId)
 
-    console.log("=====",player);
+    // const land = useComponentValue(Land, getEntityIdFromKeys([BigInt(1)]));
+    // const landManager = useComponentValue(LandManager, entityId);
+    // const player = useComponentValue(Player, entityId);
+    // const tree = useComponentValue(Tree, entityId);
+    // const treeManager = useComponentValue(TreeManager, entityId)
+
+    // console.log("=====", land);
+
 
     const handleRestoreBurners = async () => {
         try {
@@ -60,7 +71,7 @@ function App() {
 
 
     return (
-        <>
+        <div>
             <button onClick={() => account?.create()}>
                 {account?.isDeploying ? "deploying burner" : "create burner"}
             </button>
@@ -106,7 +117,90 @@ function App() {
                 </div>
             </div>
 
-            <div className="card">
+            {/* xxxxxxxxxx======================xxxxxxxxxxxxx===============xxxxxxxxxxxxxxxx */}
+
+
+
+            <FarmLand />
+
+
+
+
+
+
+
+            {/* <div className="p-6 min-h-screen flex flex-col items-center justify-center">
+                <div className=" p-6 rounded-lg shadow-lg w-full max-w-md">
+
+                    <div className="mb-2">
+                        <span className="font-bold">Spawn: </span>
+                        {player ? `${player.is_spawn}` : "Need to Spawn"}
+                    </div>
+                    <div className="mb-2">
+                        <span className="font-bold">Seed Amount: </span>
+                        {player ? `${Number(player.seed_amount)}` : 'xxxx'}
+                    </div>
+                    <div className="mb-2">
+                        <span className="font-bold">Fruit Amount: </span>
+                        {player ? `${Number(player.fruit_amount)}` : 'xxxx'}
+                    </div>
+                    <div className="mb-2">
+                        <span className="font-bold">Last Help Timestamp: </span>
+                        {player ? `${player.last_helped_timestamp}` : 'xxxx'}
+                    </div>
+                    <div className="mb-2">
+                        <span className="font-bold">Last Prank Timestamp: </span>
+                        {player ? `${player.last_pranked_timestamp}` : 'xxxx'}
+                    </div>
+                    <div className="mb-2">
+                        <span className="font-bold">Tree Array: </span>
+                        {player ? `${player.tree_array}` : 'xxxx'}
+                    </div>
+                    <div className="mb-4">
+                        <span className="font-bold">Land Array: </span>
+                        {player ? `${player.land_array}` : 'xxxx'}
+                    </div>
+
+                    <button
+                        className="bg-black text-white py-2 px-4 rounded mb-4 w-full"
+                        onClick={() => reflash(account.account)}
+                    >
+                        Reflash
+                    </button>
+                    <button
+                        className="bg-black text-white py-2 px-4 rounded mb-4 w-full"
+                        onClick={() => add_land(account.account)}
+                    >
+                        Add Land
+                    </button>
+                    <button
+                        className="bg-black text-white py-2 px-4 rounded mb-4 w-full"
+                        onClick={() => plant(account.account, 1)}
+                    >
+                        Plant
+                    </button>
+                    <button
+                        className="bg-black text-white py-2 px-4 rounded mb-4 w-full"
+                        onClick={() => watering_myself(account.account, 1)}
+                    >
+                        Watering Myself
+                    </button>
+                    <button
+                        className="bg-black text-white py-2 px-4 rounded w-full"
+                        onClick={() => watering_others(account.account, 2)}
+                    >
+                        Watering Others
+                    </button>
+                </div>
+            </div> */}
+
+
+
+
+
+
+
+            {/* <div className="">
                 <button onClick={() => spawn(account.account)}>Spawn</button>
                 <div>
                     spawn: {player ? `${player.is_spawn}` : "Need to Spawn"}
@@ -133,16 +227,11 @@ function App() {
                 <button onClick={() => reflash(account.account)}>Reflash</button>
                 <button onClick={() => add_land(account.account)}>Add Land</button>
 
+                <button onClick={() => plant(account.account, 1)}>Plant</button>
 
-                {/* <div>
-                    Position:{" "}
-                    {position
-                        ? `${position?.vec.x}, ${position?.vec.y}`
-                        : "Need to Spawn"}
-                </div> */}
-
-                {/* <div>{moves && moves.last_direction}</div> */}
-            </div>
+                <button onClick={() => watering_myself(account.account, 1)}>watering myself</button>
+                <button onClick={() => watering_others(account.account, 2)}>watering other</button>
+            </div> */}
 
             {/* <div className="card">
                 <div>
@@ -180,7 +269,7 @@ function App() {
                     </button>
                 </div>
             </div> */}
-        </>
+        </div>
     );
 }
 
