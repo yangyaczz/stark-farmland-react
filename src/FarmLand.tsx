@@ -26,13 +26,21 @@ const FarmLand: React.FC<any> = ({ }) => {
         account,
     } = useDojo();
 
+
+
     // entity id we are syncing
     const playerEntityId = getEntityIdFromKeys([
         BigInt(account?.account.address),
     ]) as Entity;
     const player = useComponentValue(Player, playerEntityId);
+
     const land = useComponentValue(Land, getEntityIdFromKeys([BigInt(selectedLandId)]));
-    console.log('aaaa', land)
+    // console.log('aaaa', land)
+
+    const tree = useComponentValue(Tree, getEntityIdFromKeys([BigInt((land ? land.tree_id : 0))]))
+    console.log('!!!!', tree)
+
+
 
 
     // reflash data (bug of dojo.js)
@@ -54,7 +62,7 @@ const FarmLand: React.FC<any> = ({ }) => {
     }, [shouldReflash, account.account]);
 
 
-
+    // init 
     if (!player) {
         return <div>
             {!player && (
@@ -74,53 +82,106 @@ const FarmLand: React.FC<any> = ({ }) => {
 
 
     const landIndices = player.land_array.map(s => parseInt(s));
-
     const totalLands = 15;
-    const landsAvailable = Array(totalLands).fill(false);
+    const myLands = Array(totalLands).fill(false);
     landIndices.forEach(index => {
         if (index - 1 >= 0 && index - 1 < totalLands) {
-            landsAvailable[index - 1] = true;
+            myLands[index - 1] = true;
         }
     });
+
 
     const handleLandClick = (index: number) => {
         setSelectedLandId(index)
         console.log(`Land at index ${index} clicked.`);
     };
 
+    function renderTreeDetails(land: any) {
+        if (!land) return null;
+
+        const treeId = Number(land.tree_id);
+        if (treeId === 0) {
+            return (
+                <div className='flex justify-center items-center space-x-2'>
+                    <div>land empty: </div>
+                    <button onClick={() => plant(account.account, selectedLandId)}>Plant</button>
+                </div>
+            );
+        } else {
+            return (
+                <div>
+                    <p>Tree ID: {tree && `${Number(tree.id)}`}</p>
+                    <p>water value: {tree && `${Number(tree.water_value)}`}</p>
+
+                    <div className='flex justify-center items-center space-x-1'>
+                        <p>last water time: {tree && `${Number(tree.last_watered_timestamp)}`}</p>
+                        <button onClick={() => watering_myself(account.account, Number(tree?.id))}>watering</button>
+                    </div>
+
+                    {tree && Number(tree.is_fruited) !== 0 && (
+                        <button onClick={() => harvest(account.account, selectedLandId)}>
+                            Harvest
+                        </button>
+                    )}
+                </div>
+            );
+        }
+    }
+
+
+
+
     return (
         <div className='relative'>
-
             <div className="grid grid-cols-5 gap-1 p-4">
-                {landsAvailable.map((landAvailable, index) => (
+                {myLands.map((myLand, index) => (
                     <button
                         key={index}
-                        onClick={() => landAvailable && handleLandClick(index + 1)}
-                        className={`w-20 h-20 ${landAvailable ? 'bg-green-200' : 'bg-green-800'} focus:outline-none`}
-                        disabled={!landAvailable}
+                        onClick={() => myLand && handleLandClick(index + 1)}
+                        className={`w-20 h-20 ${myLand ? 'bg-green-200' : 'bg-green-800'} focus:outline-none`}
+                        disabled={!myLand}
                     >
-                        {landAvailable ? '可用' : '不可用'}
+                        {myLand ? 'my land' : 'others land'}
                     </button>
                 ))}
-
             </div>
 
 
-            <div className="w-full p-4 bg-black mt-4 shadow-lg">
-                {selectedLandId !== 0 ? (
-                    <div className="text-lg font-semibold">
-                        <h3>Land Details</h3>
-                        <p>Land Index: {selectedLandId}</p>
-                        <p>owner: {land && `${land.player}`}</p>
-                        <p>tree id: {land && (Number(land.tree_id) === 0 ? 'empty' : `${Number(land.tree_id)}`)}</p>
-                        <p>Is Available: {land && (land.is_available ? 'available' : 'not available')}</p>
+            <div className="w-full p-4 mt-4 shadow-lg flex justify-center">
+                <div className="flex justify-between items-center w-full max-w-4xl bg-black"> {/* 外层容器设置最大宽度以控制大小 */}
+                    <div className="w-1/2 flex justify-center items-center">
+                        <div className="text-lg font-semibold text-white bg-black p-4">
+                            <h3>Player Details</h3>
+                            <p>seed amount: {player && `${Number(player.seed_amount)}`}</p>
+                            <div className='flex justify-center items-center space-x-1'>
+                                <p>fruit amout: {player && `${Number(player.fruit_amount)}`}</p>
+                                <button onClick={() => convert_fruit_to_seed(account.account, 5)}>convert to seed</button>
+                            </div>
+                            <p>last help timestamp: {player && `${player.last_helped_timestamp}`}</p>
+                            <p>last prank timestamp: {player && `${player.last_pranked_timestamp}`}</p>
+                            <button onClick={() => add_land(account.account)}>Add Land</button>
+                        </div>
                     </div>
-                ) : (
-                    <div className="text-lg font-semibold">
-                        <h3>Select a land to see details</h3>
+
+
+
+                    <div className="w-1/2 flex justify-center items-center">
+                        <div className="text-lg font-semibold text-white bg-black p-4">
+                            <h3>Land Details</h3>
+                            <p>Land Index: {selectedLandId}</p>
+                            <p>Owner: {land && `${(String(land.player)).substring(0, 6)}...${(String(land.player)).substring((String(land.player)).length - 4)}`}</p>
+                            {/* <p>Tree ID: {land && (Number(land.tree_id) === 0 ? 'empty' : `${Number(land.tree_id)}`)}</p> */}
+                            {renderTreeDetails(land)}
+                            {/* <p>Is Available: {land && (land.is_available ? 'available' : 'not available')}</p> */}
+                        </div>
                     </div>
-                )}
+                </div>
             </div>
+
+
+
+
+
         </div>
     );
 };
