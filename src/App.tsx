@@ -5,8 +5,13 @@ import "./App.css";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
 import { useDojo } from "./dojo/useDojo";
 import FarmLand from './FarmLand';
+import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
+import { connect, disconnect } from "get-starknet"
 
 function App() {
+
+    // return <button onClick={() => connect()}>Connect wallet</button>
+
     const {
         setup: {
             systemCalls: {
@@ -69,6 +74,7 @@ function App() {
 
 
     return (
+
         <div>
             <button onClick={() => account?.create()}>
                 {account?.isDeploying ? "deploying burner" : "create burner"}

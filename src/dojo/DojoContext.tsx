@@ -2,12 +2,12 @@ import { BurnerAccount, useBurnerManager } from "@dojoengine/create-burner";
 import { ReactNode, createContext, useContext, useMemo } from "react";
 import { Account } from "starknet";
 import { SetupResult } from "./generated/setup";
+import { useUserWallets } from "@dynamic-labs/sdk-react-core";
 
 interface DojoContextType extends SetupResult {
     masterAccount: Account;
     account: BurnerAccount;
 }
-
 export const DojoContext = createContext<DojoContextType | null>(null);
 
 export const DojoProvider = ({
@@ -18,6 +18,7 @@ export const DojoProvider = ({
     value: SetupResult;
 }) => {
     const currentValue = useContext(DojoContext);
+    // const userWallets = useUserWallets()
     if (currentValue) throw new Error("DojoProvider can only be used once");
 
     const {
