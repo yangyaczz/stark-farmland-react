@@ -10,8 +10,6 @@ import { connect, disconnect } from "get-starknet"
 
 function App() {
 
-    // return <button onClick={() => connect()}>Connect wallet</button>
-
     const {
         setup: {
             systemCalls: {
@@ -75,8 +73,8 @@ function App() {
 
     return (
 
-        <div>
-            <button onClick={() => account?.create()}>
+        <div className="pt-12">
+            {/* <button onClick={() => account?.create()}>
                 {account?.isDeploying ? "deploying burner" : "create burner"}
             </button>
             {account && account?.list().length > 0 && (
@@ -119,7 +117,7 @@ function App() {
                         use a burner. See readme.
                     </p>
                 </div>
-            </div>
+            </div> */}
 
             {/* xxxxxxxxxx======================xxxxxxxxxxxxx===============xxxxxxxxxxxxxxxx */}
 
