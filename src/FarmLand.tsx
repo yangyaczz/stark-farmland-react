@@ -237,15 +237,15 @@ const FarmLand: React.FC<any> = () => {
           <div className="px-2 text-lg font-semibold text-white ">
             <h3>Land Details</h3>
             <p className="text-left ">Land Index: {selectedLandId}</p>
-            <p className="text-left ">
+            {/* <p className="text-left ">
               Owner:{!showMyLand && "0x003...56aaf"}
               {showMyLand &&land && 
                 `${String(land.player).substring(0, 6)}...${String(land.player).substring(String(land.player).length - 4)}`}
-            </p>
+            </p> */}
             <p className="text-left">
               Stage:
               {tree?.water_value === null ||
-                (tree?.water_value === undefined && "Uncultivated")}
+                (tree?.water_value === undefined && "Empty land")}
               {tree?.water_value >= 0 && tree?.water_value < 20 && "Seed"}
               {tree?.water_value >= 20 && tree?.water_value < 60 && "Seedling"}
               {tree?.water_value >= 60 && tree?.water_value < 100 && "Blossom"}
