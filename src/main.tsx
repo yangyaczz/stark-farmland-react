@@ -67,7 +67,7 @@ async function init() {
               <p className="px-2 text-lg text-yellow-800 bg-white rounded-2xl w-[121px] cursor-pointer">Players</p>
               <p className="px-2 text-lg text-yellow-800 bg-white rounded-2xl w-[121px] cursor-pointer">Dashboard</p>
               <div className="ml-auto ">
-              <DynamicWidget buttonClassName="h-full" />
+              <DynamicWidget/>
               </div>
             </div>
             <App />
